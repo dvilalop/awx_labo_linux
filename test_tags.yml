@@ -1,0 +1,48 @@
+---
+- hosts: "{{ hosts }}"
+  become: true
+  tasks:
+  - name: "instala httpd"
+    package:
+      name: httpd
+      state: latest
+    tags: [never,instalar]
+  - name: "iniciar el servicio"
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    tags: [never,instalar]
+  - name: "crea index.html"
+    file:
+      path: /var/www/html/index.html
+      state: touch
+    tags: [never,instalar]
+  - name: "mete contenido"
+    copy:
+      dest: /var/www/html/index.html
+      content: "hola mundo cruel !"
+    tags: [never,instalar]
+  - name: "chequea curl al server"
+    uri:
+      url: "http://{{ item }}"
+      return_content: yes
+    register: resultado
+    with_items: "{{ hosts }}"
+    delegate_to: localhost
+    tags: [never,instalar]
+  - name: "pint resultado curl"
+    debug:
+      msg: "{{ item.content }}"
+    with_items: "{{ resultado.results }}"
+    tags: [never,instalar]
+  - name: "desinstala httpd"
+    package:
+      name: httpd
+      state: absent
+    tags: [never,desinstalar]
+  - name: "borra index.html"
+    file:
+      path: /var/www/html/index.html
+      state: absent
+    tags: [never,desinstalar]

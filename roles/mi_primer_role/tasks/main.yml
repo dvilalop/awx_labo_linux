@@ -1,0 +1,5 @@
+---
+# tasks file for mi_primer_role
+  - name: "mi primer role !!!"
+    debug:
+      msg: "hola mundo !"

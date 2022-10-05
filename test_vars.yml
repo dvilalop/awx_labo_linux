@@ -1,0 +1,13 @@
+---
+- hosts: "{{ hosts }}"
+  serial: 1
+  become: true
+  gather_facts: no
+  tasks:
+  - name: "pinta los hosts"
+    debug:
+      msg: "el valor es : {{ item }} , {{ dani }}"
+    with_items:
+      - 1
+      - 2
+      - 3
